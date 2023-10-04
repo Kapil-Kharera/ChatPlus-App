@@ -7,7 +7,7 @@ dotenv.config();
 
 const server = app.listen(process.env.PORT || 8000, () => {
     logger.info(`Server is listening on ${process.env.PORT}`);
-    console.log("Process id : ", process.pid);
+    // console.log("Process id : ", process.pid);
 });
 
 //handler server error 
