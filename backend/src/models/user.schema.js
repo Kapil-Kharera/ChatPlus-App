@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import bcrypt from "bcrypt";
 
 const userSchema = mongoose.Schema({
     name: {
@@ -30,6 +31,22 @@ const userSchema = mongoose.Schema({
 }, {
     collection: "users", //collection name or table name
     timestamps: true
+});
+
+//this action take place before saving the data into db
+userSchema.pre("save", async function(next) {
+    try {
+        //check the document is new 
+        if(this.isNew) {
+            const salt = await bcrypt.genSalt(12);
+            const hashedPassword = await bcrypt.hash(this.password, salt);
+            this.password = hashedPassword;
+        }
+
+        next();
+    } catch (error) {
+        next(error);
+    }
 });
 
 //Check if the UserModel already exists, otherwise create it
