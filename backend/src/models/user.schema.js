@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema({
     },
     picture: {
         type: String,
-        default: "" //set default image here
+        default: "https://res.cloudinary.com/dkd5jblv5/image/upload/v1675976806/Default_ProfilePicture_gjngnb.png" //set default image here
     },
     status: {
         type: String,
