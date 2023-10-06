@@ -1,4 +1,5 @@
 import { createUser } from "../services/auth.service.js";
+import { generateToken } from "../services/token.service.js";
 
 export const resgister = async (req, res, next) => {
     try {
@@ -11,10 +12,40 @@ export const resgister = async (req, res, next) => {
             password
         });
 
+        //generating access token
+        const acessToken = await generateToken(
+            {userId: newUser._id}, 
+            "1d", 
+            process.env.ACCESS_TOKEN_SECRET
+        );
+
+        //generating refresh token
+        const refreshToken = await generateToken(
+            {userId: newUser._id}, 
+            "30d", 
+            process.env.REFRESH_TOKEN_SECRET
+        );
+        
+
+        //sending refresh token in cookies
+        res.cookie("refreshtoken", refreshToken, {
+            httpOnly: true,
+            path: "/api/v1/auth/refreshtoken",
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+        })
+
+
         res.status(200).json({
             success: true,
-            message: "User created successfully",
-            newUser
+            message: "User registered successfully",
+            acessToken: acessToken,
+            user: {
+                _id: newUser._id,
+                name: newUser.name,
+                email: newUser.email,
+                picture: newUser.picture,
+                status: newUser.status
+            }
         });
 
     } catch (error) {
