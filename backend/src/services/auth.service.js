@@ -1,5 +1,6 @@
 import createHttpError from "http-errors";
 import validator from "validator";
+import bcrypt from "bcrypt";
 import { UserModel } from "../models/index.js";
 
 //env variables
@@ -48,6 +49,27 @@ export const createUser = async (userData) => {
         picture: picture || DEFAULT_PICTURE, 
         status: status || DEFAULT_STATUS, 
         password}).save();
+
+    return user;
+}
+
+
+export const signUser = async (email, password) => {
+    //finding user by email
+    //lean()- it will mongoose, to return JS plain obj not mongodb doc obj
+    const user = await UserModel.findOne({ email: email.toLowerCase() }).lean();
+
+    if(!user) {
+        throw createHttpError.NotFound('Invalid credentials');
+    }
+
+    //comparing password
+    const passwordMatched = await bcrypt.compare(password, user.password);
+
+    if(!passwordMatched) {
+        throw createHttpError.NotFound('Invalid credentials');
+    }
+
 
     return user;
 }

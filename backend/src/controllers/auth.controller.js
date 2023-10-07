@@ -1,4 +1,4 @@
-import { createUser } from "../services/auth.service.js";
+import { createUser, signUser } from "../services/auth.service.js";
 import { generateToken } from "../services/token.service.js";
 
 export const resgister = async (req, res, next) => {
@@ -59,7 +59,46 @@ export const resgister = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
     try {
+        const { email, password } = req.body;
         
+        const user = await signUser(email, password);
+
+        //generating access token
+        const acessToken = await generateToken(
+            {userId: user._id}, 
+            "1d", 
+            process.env.ACCESS_TOKEN_SECRET
+        );
+
+        //generating refresh token
+        const refreshToken = await generateToken(
+            {userId: user._id}, 
+            "30d", 
+            process.env.REFRESH_TOKEN_SECRET
+        );
+        
+
+        //sending refresh token in cookies
+        res.cookie("refreshtoken", refreshToken, {
+            httpOnly: true,
+            path: "/api/v1/auth/refreshtoken",
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+        })
+
+
+        res.status(200).json({
+            success: true,
+            message: "User login successfully",
+            acessToken: acessToken,
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                picture: user.picture,
+                status: user.status
+            }
+        });
+
     } catch (error) {
         // res.status(500).json({ message: error.message });
         //we send this error(through next) to http-error(package), it will
@@ -70,7 +109,13 @@ export const login = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
     try {
-        
+        //to logout, just remove the refresh token
+        res.clearCookie("refreshtoken", {path: "/api/v1/auth/refreshtoken"});
+
+        res.status(200).json({
+            success: true,
+            message: "Logout Successfully",
+        })
     } catch (error) {
         // res.status(500).json({ message: error.message });
         //we send this error(through next) to http-error(package), it will
