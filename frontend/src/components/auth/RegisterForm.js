@@ -1,6 +1,19 @@
-import React from 'react'
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { signUpSchema } from "../../utils/validation";
 
 const RegisterForm = () => {
+  const { 
+    register, 
+    handleSubmit, 
+    watch, 
+    formState: {errors} } = useForm({
+      resolver: yupResolver(signUpSchema)
+  });
+  const onSubmit = (data) => console.log(data);
+
+  console.log("Values : ", watch());
+  console.log("Errors : ", errors);
   return (
     <div className="h-screen w-full flex items-center justify-center overflow-hidden">
         {/* container */}
@@ -11,8 +24,12 @@ const RegisterForm = () => {
                 <p className="mt-2 text-sm">Sign up</p>
             </div>
             {/* Form */}
-            <form className="mt-6 space-y-6">
-
+            <form 
+              className="mt-6 space-y-6"
+              onSubmit={handleSubmit(onSubmit)}
+              >
+                <input type="text" {...register("name")} />
+                <button type="submit">Submit</button>
             </form>
         </div> 
     </div>
