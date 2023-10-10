@@ -12,7 +12,7 @@ const persistConfig = {
     key: "user",
     storage,
     whitelist: ["user"],
-    tranforms: [saveUserOnlyFilter]
+    transforms: [saveUserOnlyFilter]
 }
 
 const rootReducer = combineReducers({

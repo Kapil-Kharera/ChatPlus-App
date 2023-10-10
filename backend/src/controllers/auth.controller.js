@@ -6,6 +6,7 @@ import { findUser } from "../services/user.service.js";
 export const resgister = async (req, res, next) => {
     try {
         const { name, email, picture, status, password } = req.body;
+        console.log(req.body);
         const newUser = await createUser({
             name, 
             email, 
@@ -40,13 +41,14 @@ export const resgister = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: "User registered successfully",
-            acessToken: acessToken,
+            
             user: {
                 _id: newUser._id,
                 name: newUser.name,
                 email: newUser.email,
                 picture: newUser.picture,
-                status: newUser.status
+                status: newUser.status,
+                acessToken: acessToken
             }
         });
 
@@ -91,13 +93,13 @@ export const login = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: "User login successfully",
-            acessToken: acessToken,
             user: {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
                 picture: user.picture,
-                status: user.status
+                status: user.status,
+                acessToken: acessToken,
             }
         });
 
@@ -151,13 +153,13 @@ export const refreshToken = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            acessToken: acessToken,
             user: {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
                 picture: user.picture,
-                status: user.status
+                status: user.status,
+                acessToken: acessToken
             }
         });
 
