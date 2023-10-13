@@ -53,6 +53,18 @@ export const userSlice = createSlice({
         .addCase(RegisterUser.rejected, (state, action) => {
             state.status = "failed";
             state.error = action.payload;
+        }).addCase(LoginUser.pending, (state, action) => {
+            state.status = "loading";
+            state.error = "";
+        })
+        .addCase(LoginUser.fulfilled, (state, action) => {
+            state.status = "succeeded";
+            state.error = "";
+            state.user = action.payload.user;
+        })
+        .addCase(LoginUser.rejected, (state, action) => {
+            state.status = "failed";
+            state.error = action.payload;
         })
     }
 });
@@ -65,7 +77,17 @@ export const RegisterUser = createAsyncThunk("auth/register",
     } catch (error) {
         return rejectWithValue(error.response.data.error.message);
     }
-})
+});
+
+export const LoginUser = createAsyncThunk("auth/login", 
+    async (values, { rejectWithValue}) => {
+    try {
+        const { data } = await axios.post(`${AUTH_ENDPOINT}/login`, { ...values });
+        return data;
+    } catch (error) {
+        return rejectWithValue(error.response.data.error.message);
+    }
+});
 
 export const { logout, changeStatus } = userSlice.actions;
 
