@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import {  useSelector } from "react-redux/es/hooks/useSelector";
 
 //Pages
@@ -9,13 +9,14 @@ import Register from "./pages/Register";
 function App() {
   const  user  = useSelector((state) => state.user);
   console.log(user);
+  const { acessToken : token } = user;
   return (
     <div className="dark">
       <Router>
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route exact path="/" element={ token ? <Home /> : <Navigate to="/login" /> } />
+          <Route path="/login" element={ !token ? <Login /> : <Navigate to="/" /> } />
+          <Route path="/register" element={ !token ? <Register /> : <Navigate to="/" />} />
         </Routes>
       </Router>
     </div>
