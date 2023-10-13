@@ -1,29 +1,63 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signUpSchema } from "../../utils/validation";
 import { useDispatch, useSelector } from "react-redux";
 import  PulseLoader  from "react-spinners/PulseLoader";
 import { Link, useNavigate } from 'react-router-dom';
+import axios from "axios";
 import AuthInput from "./AuthInput";
-import { RegisterUser } from "../../features/userSlice";
+import { RegisterUser, changeStatus } from "../../features/userSlice";
+import Picture from "./Picture";
+
+//env. var
+const { REACT_APP_CLOUD_NAME, REACT_APP_CLOUD_SECRET } = process.env;
 
 const RegisterForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { status, error } = useSelector((state) => state.user);
+  const [ picture, setPicture ] = useState();
+  const [ readablePicture, setReadablePicture ] = useState("");
   const { register, handleSubmit, formState: {errors} } = useForm({
       resolver: yupResolver(signUpSchema)
   });
+
+  // console.log(picture, readablePicture);
+
   const onSubmit = async (data) => {
-    const response = await dispatch(RegisterUser({ ...data, picture: "" }));
-    console.log(response);
-    if(response.payload.user) navigate("/");
+    let response;
+
+    dispatch(changeStatus("loading"));
+    
+    if(picture) {
+      //upload img to cloudinary & then register user
+      await uploadImage().then(async (item) => {
+        response = await dispatch(RegisterUser({ ...data, picture: item.secure_url}));
+        console.log(response);
+      });
+    }else {
+      response = await dispatch(RegisterUser({ ...data, picture: "" }));
+    }
+    
+
+    if(response?.payload?.user) navigate("/");
   };
 
+  const uploadImage = async () => {
+    const formData = new FormData();
+    formData.append("upload_preset", REACT_APP_CLOUD_SECRET);
+    formData.append("file", picture);
+
+    const { data } = await axios.post(`https://api.cloudinary.com/v1_1/${REACT_APP_CLOUD_NAME}/image/upload`, formData);
+    console.log(data);
+    return data;
+  }
+
   return (
-    <div className="h-screen w-full flex items-center justify-center overflow-hidden">
+    <div className="min-h-screen w-full flex items-center justify-center overflow-hidden">
         {/* container */}
-        <div className="max-w-mid space-y-8 p-10 dark:bg-dark_bg_2 rounded-xl">
+        <div className="w-full max-w-md space-y-8 p-10 dark:bg-dark_bg_2 rounded-xl">
             {/* Heading */}
             <div className="text-center dark:text-dark_text_1">
                 <h2 className="mt-6 text-3xl font-bold">Welcome</h2>
@@ -53,7 +87,7 @@ const RegisterForm = () => {
                 <AuthInput 
                   name="status"
                   type="text"
-                  placeholder="Status"
+                  placeholder="Status (Optional)"
                   register={register}
                   error={errors?.status?.message}
                   />
@@ -65,6 +99,9 @@ const RegisterForm = () => {
                   register={register}
                   error={errors?.password?.message}
                   />
+
+                  {/* Picture */}
+                  <Picture readablePicture={readablePicture} setReadablePicture={setReadablePicture} setPicture={setPicture} />
 
                 {/* If we have an error */}
                 

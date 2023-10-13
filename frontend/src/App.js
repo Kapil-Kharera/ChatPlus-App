@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 
 function App() {
   const  user  = useSelector((state) => state.user);
+  console.log(user);
   return (
     <div className="dark">
       <Router>
