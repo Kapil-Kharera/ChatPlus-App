@@ -57,7 +57,7 @@ export const getconversationMessages = async (id) => {
     .populate("sender", "name picture email status")
     .populate("conversation");
 
-    console.log(messages);
+    // console.log(messages);
 
     if(!messages) {
         throw createHttpError.BadRequest("Oops, Something went wrong!");

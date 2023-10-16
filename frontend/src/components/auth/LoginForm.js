@@ -21,7 +21,11 @@ const RegisterForm = () => {
   const onSubmit = async (values) => {
     const response = await dispatch(LoginUser({...values}));
 
-    if(response?.payload?.user) navigate("/");
+    console.log(response);
+
+    if(response?.payload?.user) {
+        navigate("/")
+    };
 
   };
 

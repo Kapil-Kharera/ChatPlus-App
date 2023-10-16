@@ -7,16 +7,17 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 
 function App() {
-  const  user  = useSelector((state) => state.user);
-  console.log(user);
-  const { acessToken : token } = user;
+  //user.user, that's why we destructuring it
+  const  { user }  = useSelector((state) => state.user);
+
+  const { acessToken: token} = user;
   return (
     <div className="dark">
       <Router>
         <Routes>
           <Route exact path="/" element={ token ? <Home /> : <Navigate to="/login" /> } />
-          <Route path="/login" element={ !token ? <Login /> : <Navigate to="/" /> } />
-          <Route path="/register" element={ !token ? <Register /> : <Navigate to="/" />} />
+          <Route exact path="/login" element={ !token ? <Login /> : <Navigate to="/" /> } />
+          <Route exact path="/register" element={ !token ? <Register /> : <Navigate to="/" />} />
         </Routes>
       </Router>
     </div>
