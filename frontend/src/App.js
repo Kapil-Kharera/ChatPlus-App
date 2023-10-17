@@ -10,7 +10,7 @@ function App() {
   //user.user, that's why we destructuring it
   const  { user }  = useSelector((state) => state.user);
 
-  const { acessToken: token} = user;
+  const {  token } = user;
   return (
     <div className="dark">
       <Router>

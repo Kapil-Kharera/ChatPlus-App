@@ -48,7 +48,7 @@ export const resgister = async (req, res, next) => {
                 email: newUser.email,
                 picture: newUser.picture,
                 status: newUser.status,
-                acessToken: acessToken
+                token: acessToken
             }
         });
 
@@ -99,7 +99,7 @@ export const login = async (req, res, next) => {
                 email: user.email,
                 picture: user.picture,
                 status: user.status,
-                acessToken: acessToken,
+                token: acessToken,
             }
         });
 
@@ -159,7 +159,7 @@ export const refreshToken = async (req, res, next) => {
                 email: user.email,
                 picture: user.picture,
                 status: user.status,
-                acessToken: acessToken
+                token: acessToken
             }
         });
 
