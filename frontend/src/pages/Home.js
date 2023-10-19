@@ -9,7 +9,7 @@ const Home = () => {
   
   //get conversations
   useEffect(() => {
-    if(user.token) {
+    if(user?.token) {
       dispatch(getConversations(user.token));
     }
   }, [user]);

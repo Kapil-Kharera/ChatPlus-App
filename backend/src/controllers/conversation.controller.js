@@ -49,10 +49,12 @@ export const getConversation = async (req, res, next) => {
     try {
         const { userId } = req.user;
         const conversations = await getUserConversations(userId);
-        res.status(200).json({
-            success: true,
-            conversations
-        });
+    
+        res.status(200).json(conversations);
+        // res.status(200).json({
+        //     success: true,
+        //     conversations
+        // });
     } catch (error) {
         next(error);
     }
