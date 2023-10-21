@@ -9,7 +9,7 @@ export default function Search({ searchLength, setSearchResults }) {
     const [show, setShow] = useState(false);
 
     const handleSearch = async (e) => {
-        console.log(e.target.value);
+        // console.log(e.target.value);
         if(e.target.value && e.key === "Enter") {
             try {
                 const { data } = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/user?search=${e.target.value}`, {

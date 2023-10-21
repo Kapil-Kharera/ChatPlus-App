@@ -2,8 +2,8 @@ import moment from "moment";
 import { dateHandler } from "../../../utils/date";
 
 export default function Conversation({ data }) {
-  console.log(moment().fromNow());
-  console.log(moment(data.latestMessage.createdAt).fromNow(true));
+  // console.log(moment().fromNow());
+  // console.log(moment(data.latestMessage.createdAt).fromNow(true));
   return (
     <li className="list-none h-[72px] w-full dark:bg-dark_bg_1 hover:dark:bg-dark_bg_2 dark:text-dark_text_1 px-[10px] cursor-pointer">
       {/* container */}
