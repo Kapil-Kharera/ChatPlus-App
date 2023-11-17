@@ -8,7 +8,7 @@ import { SearchResults } from "./search";
 
 export default function Sidebar() {
   const [searchResults, setSearchResults] = useState([]);
-  console.log(searchResults);
+  // console.log(searchResults);
   return (
     <div className="w-[30%] h-full select-none">
       {/* sidebar header */}
